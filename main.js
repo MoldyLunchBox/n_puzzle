@@ -18,6 +18,7 @@ class State {
         this.hash = [].concat.apply([], this.stateMap).join(".");
     }
     calculateScore() {
+        
         return this.level + 0
     }
     generateSubStates() {
@@ -150,6 +151,9 @@ async function main() {
                 openSet.set(pzlState.hash , pzlState)
              
         })
+
+
+        // sort openset
         
     }
     log("end")
