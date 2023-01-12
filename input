@@ -1,12 +1,5 @@
 # This puzzle is unsolvable
 3
-1 8 2
-3 4 5
-6 7 0
-
-convert openset and closedSet to array
-// remove the for loop inside the while 
-// apply the logic inside foor lop on the first elemen of openSet only
-// keep the subStategenerator as it is
-// pop the first element in openSet (which we just did our logic on)
-// sort the openSet by the score value
+4 1 3
+0 2 5
+7 8 6

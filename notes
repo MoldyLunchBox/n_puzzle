@@ -1,0 +1,7 @@
+
+convert openset and closedSet to array
+// remove the for loop inside the while 
+// apply the logic inside foor lop on the first elemen of openSet only
+// keep the subStategenerator as it is
+// pop the first element in openSet (which we just did our logic on)
+// sort the openSet by the score value

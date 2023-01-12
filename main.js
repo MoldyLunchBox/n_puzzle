@@ -1,68 +1,26 @@
 const fs = require('fs');
 const { exit, mainModule } = require('process');
 const readline = require('readline');
-
+const { State } = require('./classes');
+const { print_map, state_to_arr, strToArr } = require('./utils');
+const { generateGoal } = require('./algo');
+var {size, openSet, closedSet,} = require('./globalVars');
 const { log } = console;
-function copyObj(ubj) {
-    return JSON.parse(JSON.stringify(ubj))
-}
-let size = 0
-let openSet = new Map()
-let closedSet = new Map()
-class State {
-    constructor(stateMap, parent) {
-        this.stateMap = stateMap;
-        this.parent = parent
-        this.level = (parent?.level || -1) + 1
-        this.score = this.calculateScore()
-        this.hash = [].concat.apply([], this.stateMap).join(".");
-    }
-    calculateScore() {
-        
-        return this.level + 0
-    }
-    generateSubStates() {
-        let zeroIdx = 0
-        let possibleStates = []
 
-        for (let i = 0; i < size; i++) {
-            for (let x = 0; x < size; x++) {
-                if (this.stateMap[i][x] == '0') {
-                    zeroIdx = { i, x }
-                    if (this.stateMap[i - 1]?.[x]) { possibleStates.push(swapWithZero(this.stateMap, zeroIdx, { 'i': i - 1, 'x': x })) }
-                    if (this.stateMap[i + 1]?.[x]) { possibleStates.push(swapWithZero(this.stateMap, zeroIdx, { 'i': i + 1, 'x': x })) }
-                    if (this.stateMap[i]?.[x + 1]) { possibleStates.push(swapWithZero(this.stateMap, zeroIdx, { 'i': i, 'x': x + 1 })) }
-                    if (this.stateMap[i]?.[x - 1]) { possibleStates.push(swapWithZero(this.stateMap, zeroIdx, { 'i': i, 'x': x - 1 })) }
-                    break
-                }
-            }
-        }
-        return possibleStates.map(pzl => new State(pzl, this))
-    }
-    print(pzl = this.stateMap) {
-        log(' . . . . . . . . .')
-        for (let i = 0; i < size; i++) {
-            log(`: ${pzl[i].join(" ")} :`)
-        }
-    }
-}
-
-
-function swapWithZero(stateMap, zeroIdx, move) {
-    const stateMapCopy = copyObj(stateMap)
-    const tmp = stateMapCopy[move.i][move.x]
-
-    stateMapCopy[move.i][move.x] = '0'
-    stateMapCopy[zeroIdx.i][zeroIdx.x] = tmp
-
-    return stateMapCopy
-}
-
+/**
+ * 
+ * @param {map as array of arrays} stateMap 
+ * @returns  a string in which each element is seperated by a dot
+ */
 function stateToStr(stateMap) {
     return [].concat.apply([], stateMap).join(".");
 }
 
-
+/**
+ * 
+ * @param {map array} arr 
+ * @returns -1 if the values in the map are not digits 
+ */
 function puzzle_verifier(arr) {
     i = 0;
     j = 0
@@ -113,57 +71,56 @@ async function processLineByLine() {
 }
 
 
+
+function blok(s) {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            resolve()
+        }, s * 1000)
+    })
+}
+
 async function main() {
     console.clear()
     var stateMap = await processLineByLine();
     size = stateMap[0].length
-    console.log(stateMap)
+    print_map(stateMap)
     log(`Size of puzzle : ${size}`)
     log(`State in string : ${stateToStr(stateMap)}`)
-
+    
     const state = new State(stateMap, null)
-    openSet.set(state.hash ,state)
-   
+    openSet.set(state.hash, state)
     log("Start", openSet.size)
     let solution = null
-    while (openSet.size) {
+    let closedArr = []
+    array = state_to_arr(openSet)
+    log(size)
+    let goal = generateGoal(array[0].stateMap.length, "ok")
+    while (array.length) {
+        print_map(array[0].stateMap)
         let subStates = []
-    
-        for (let [key, value] of  openSet.entries()) {
-         
-            if (value.hash == '0.1.2.3.4.5.6.7.8')
-            {
-                solution = value
-                break
-            }
-        
-            subStates.push(...value.generateSubStates())
-            openSet.delete(key)
-            closedSet.set(key, value)
-        }
-      
-        if (solution)
+        if (array[0].hash == goal) {
+            log("end")
+            solution = array[0]
             break
-          
-  
-        subStates.map(pzlState => {
-            if (!openSet.get(pzlState.hash))
-                openSet.set(pzlState.hash , pzlState)
-             
-        })
-
-
-        // sort openset
-        
+        }
+         // break
+        subStates = array[0].generateSubStates()
+        // log(array.map(l => l.score))
+        array = array.filter(l => !(l.hash === array[0].hash))
+        array = [...subStates.filter(sbs => !closedArr.includes(sbs.hash)), ...array]
+        closedArr.push(array[0].hash)
+        array.sort((a,b) => a.score-b.score)
+        console.clear()
+        log("Open Array ", array.length)
+        log("Closed Array ", closedArr.length)
+        await blok(1)
+       
     }
-    log("end")
-    log(openSet.size)
-    log(closedSet.size)
-
     let steps = 0
-    log(solution.hash)
     while (solution.parent) {
-        log(solution.parent.hash)
+        print_map(solution.parent.stateMap)
+        await blok(1)
         solution = solution.parent
         steps++
     }
