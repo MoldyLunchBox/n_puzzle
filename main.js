@@ -94,7 +94,6 @@ async function main() {
     let solution = null
     let closedArr = []
     array = state_to_arr(openSet)
-    log(size)
     let goal = generateGoal(array[0].stateMap.length, "ok")
     while (array.length) {
         print_map(array[0].stateMap)
@@ -106,6 +105,11 @@ async function main() {
         }
          // break
         subStates = array[0].generateSubStates()
+        // log("\n/////// children ///////// ")
+        // subStates.map((e)=>{print_map(strToArr(e.hash, size)), log(e.score)})
+        // log("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ \n")
+        // log("\wanted: ")
+        // print_map(strToArr(goal, size))
         // log(array.map(l => l.score))
         array = array.filter(l => !(l.hash === array[0].hash))
         array = [...subStates.filter(sbs => !closedArr.includes(sbs.hash)), ...array]
@@ -114,7 +118,7 @@ async function main() {
         console.clear()
         log("Open Array ", array.length)
         log("Closed Array ", closedArr.length)
-        await blok(1)
+        //await blok(1)
        
     }
     let steps = 0

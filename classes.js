@@ -1,6 +1,7 @@
 
-const { copyObj, getCoordInMap, print_map, swapWithZero } = require('./utils');
+const { copyObj, getCoordInMap, print_map, swapWithZero, strToArr } = require('./utils');
 const { heuristic_manhattan, generateGoal } = require('./algo');
+const { exit } = require('process');
 
 const { log } = console;
 
@@ -9,15 +10,13 @@ class State {
         this.stateMap = stateMap;
         this.parent = parent
         this.level = (parent?.level || -1) + 1
-        this.score = this.calculateScore()  + this.level
         this.hash = [].concat.apply([], this.stateMap).join(".");
+        this.score = this.calculateScore()  + this.level
     }
     // parseInt
     calculateScore() {
-       
-        let goal = [['1', '2', '3'], ['4', '5', '6'], ['7', '8', '0']]
+        let goal = strToArr(generateGoal(this.stateMap.length, ""), this.stateMap.length)
         let score = 0
-        print_map(goal)
         for (let i = 0; i < goal.length; i++) {
         
             for (let j = 0; j < goal.length; j++) {
@@ -35,6 +34,7 @@ class State {
             }
 
         }
+       
         return this.level + score
     }
     generateSubStates() {

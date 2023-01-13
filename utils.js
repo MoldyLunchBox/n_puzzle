@@ -20,9 +20,14 @@ function getCoordInMap(map, target) {
 }
 
 function print_map(map) {
+    line = ""
     log("================")
+    let size = map.length
     for (let i = 0; i < map.length; i++) {
-        log("   ", map[i].join(" "))
+        for (let j = 0; j < map.length; j++)
+            line += map[i][j] + " ".repeat(((size * size).toString().length -  map[i][j].length)) + ' '
+        log(line)
+        line = ''
     }
     log("================")
 }
@@ -36,13 +41,15 @@ function state_to_arr(stateSet) {
 }
 
 function strToArr(mapStr, size){
-    mapArr = []
-    log(size)
-    for (let i = 0; i < size*2; i++){
-        for (let j = 0; j < size*2;j++){
-            log(mapStr[i * size + j])
+    map =  mapStr.split('.')
+    mapArr = [[],[],[],[]]
+    for (let i = 0; i < size; i++){
+        for (let j = 0; j < size; j++){
+            if (map[i * size + j])
+                mapArr[i].push(map[i * size + j])
+            }
         }
-    }
+    return(mapArr)
 }
 
 /**
