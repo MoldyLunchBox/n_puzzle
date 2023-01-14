@@ -3,7 +3,7 @@ const { exit, mainModule } = require('process');
 const readline = require('readline');
 const { State } = require('./classes');
 const { print_map, state_to_arr, strToArr } = require('./utils');
-const { generateGoal } = require('./algo');
+const { generateGoal, isSolvable } = require('./algo');
 var { size, openSet, closedSet, } = require('./globalVars');
 const { kMaxLength } = require('buffer');
 const { log } = console;
@@ -81,11 +81,15 @@ function blok(s) {
     })
 }
 
+
+
 async function main() {
     console.clear()
     var stateMap = await processLineByLine();
+    log (stateMap)
     size = stateMap[0].length
     print_map(stateMap)
+
     log(`Size of puzzle : ${size}`)
     log(`State in string : ${stateToStr(stateMap)}`)
 
@@ -96,10 +100,23 @@ async function main() {
     let closedArr = []
     array = state_to_arr(openSet)
     let goal = generateGoal(array[0].stateMap.length, "ok")
-
+    log(array)
     while (array.length) {
 
-
+        
+        log("curr state")
+        print_map(array[0].stateMap)
+        log("size of array: ", array.length)
+        if (!isSolvable(array[0].stateMap))
+        {
+            log("\n\n\n\n\n\n\n oh shit its false \n\n\n\n")
+            exit()
+        }
+        // if (array[0].hash == "8.1.3.0.2.4.7.6.5"){
+        //     log("-----------array-------------")
+        //     array.map((e)=> print_map(e.stateMap, e.score))
+        //     log("-----------------------------")
+        // }
         let subStates = []
         if (array[0].hash == goal) {
             log("end")
@@ -127,19 +144,21 @@ async function main() {
         // console.clear()
         log("Open Array ", array.length)
         log("Closed Array ", closedArr.length)
-        print_map(array[0].stateMap)
-        log("*********************************************")
-        subStates.filter(l => !closedArr.includes(l) && !array.find(el => el.hash == l.hash)).forEach(el => print_map(el.stateMap))
-        log("*********************************************")
+        log("***************** closed ******************")
+        closedArr.map((e)=> print_map(strToArr(e, size)))
+
+        log("***************** children ******************")
+        //subStates.filter(l => !closedArr.includes(l) && !array.find(el => el.hash == l.hash)).forEach(el => print_map(el.stateMap))
+        subStates.map((e)=> print_map(e.stateMap, e.score))
+        log("****************** end ******************\n\n\n")
 
 
 
-        await blok(1)
 
     }
     let steps = 0
-    print_map(solution.stateMap)
     while (solution.parent) {
+        print_map(solution.stateMap)
         print_map(solution.parent.stateMap)
         await blok(1)
         solution = solution.parent

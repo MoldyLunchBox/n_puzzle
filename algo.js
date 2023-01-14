@@ -20,7 +20,33 @@ function generateGoal(mapSize, goalType){
     return goal
 }
 
+function getInvCount(arr)
+{
+    let inv_count = 0 ;
+    for(let i=0;i<2;i++){
+        for(let j=i+1;j<3;j++){
+         
+            // Value 0 is used for empty space
+            if (arr[j][i] > 0 && arr[j][i] > arr[i][j])
+                inv_count += 1;
+        }
+     }
+    return inv_count;
+}
+// This function returns true
+// if given 8 puzzle is solvable.
+function isSolvable(puzzle)
+{
+    // Count inversions in given 8 puzzle
+    eh = puzzle.map((e)=> e.map((el)=> parseInt(el)))
+    let invCount = getInvCount(eh);
+    // return true if inversion count is even.
+    return (invCount % 2 == 0);
+}
+ 
+
 module.exports = {
     generateGoal,
     heuristic_manhattan,
+    isSolvable,
   };

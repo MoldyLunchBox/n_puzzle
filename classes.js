@@ -1,6 +1,6 @@
 
 const { copyObj, getCoordInMap, print_map, swapWithZero, strToArr } = require('./utils');
-const { heuristic_manhattan, generateGoal } = require('./algo');
+const { heuristic_manhattan, generateGoal, isSolvable } = require('./algo');
 const { exit } = require('process');
 
 const { log } = console;
@@ -76,17 +76,43 @@ class State {
             for (let x = 0; x < size; x++) {
                 if (this.stateMap[i][x] == '0') {
                     zeroIdx = { i, x }
-                    if (this.stateMap[i - 1]?.[x]) { possibleStates.push(swapWithZero(this.stateMap, zeroIdx, { 'i': i - 1, 'x': x })) }
-                    if (this.stateMap[i + 1]?.[x]) { possibleStates.push(swapWithZero(this.stateMap, zeroIdx, { 'i': i + 1, 'x': x })) }
-                    if (this.stateMap[i]?.[x + 1]) { possibleStates.push(swapWithZero(this.stateMap, zeroIdx, { 'i': i, 'x': x + 1 })) }
-                    if (this.stateMap[i]?.[x - 1]) { possibleStates.push(swapWithZero(this.stateMap, zeroIdx, { 'i': i, 'x': x - 1 })) }
+                    if (this.stateMap[i - 1]?.[x]) { 
+                        log(swapWithZero(this.stateMap, zeroIdx, { 'i': i - 1, 'x': x }))
+                        let  puz = swapWithZero(this.stateMap, zeroIdx, { 'i': i - 1, 'x': x })
+                        let good = isSolvable(puz)
+                        log(good)
+                        if (good)
+                        possibleStates.push(puz) 
+                    }
+                    if (this.stateMap[i + 1]?.[x]) { 
+                        let puz = swapWithZero(this.stateMap, zeroIdx, { 'i': i + 1, 'x': x })
+                        let good = isSolvable(puz)
+                        log(good)
+                        if (good)
+                        possibleStates.push(puz) 
+                    }
+                    if (this.stateMap[i]?.[x + 1]) { 
+                        let puz = swapWithZero(this.stateMap, zeroIdx, { 'i': i, 'x': x + 1 })
+                        let good = isSolvable(puz)
+                        log(good)
+                        if (good)
+                        possibleStates.push(puz) 
+                    }
+                    if (this.stateMap[i]?.[x - 1]) { 
+                        let puz = swapWithZero(this.stateMap, zeroIdx, { 'i': i, 'x': x - 1 })
+                        let good = isSolvable(puz)
+                        log(good)
+                        if (good)
+                        possibleStates.push(puz) 
+                    }
                     break
                 }
             }
         }
     
         const subs = possibleStates.map(pzl => new State(pzl, this, this.heuristicToUse))
-       
+       log (subs.length)
+       log("\n\n\n\n\n\n")
         return subs
     }
     print(pzl = this.stateMap) {

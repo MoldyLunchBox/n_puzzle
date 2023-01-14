@@ -19,13 +19,17 @@ function getCoordInMap(map, target) {
     return false
 }
 
-function print_map(map) {
+function print_map(map, score) {
     line = ""
     log("================")
     let size = map.length
     for (let i = 0; i < map.length; i++) {
-        for (let j = 0; j < map.length; j++)
+        for (let j = 0; j < map.length; j++){
+
             line += map[i][j] + " ".repeat(((size * size).toString().length -  map[i][j].length)) + ' '
+            if (score != undefined && i == map.length -1 && j == map.length -1) 
+                line += "\x1b[33m  score: " + score + "\x1b[0m"
+        }
         log(line)
         line = ''
     }
@@ -42,7 +46,7 @@ function state_to_arr(stateSet) {
 
 function strToArr(mapStr, size){
     map =  mapStr.split('.')
-    mapArr = [[],[],[],[]]
+    mapArr = [[],[],[]]
     for (let i = 0; i < size; i++){
         for (let j = 0; j < size; j++){
             if (map[i * size + j])

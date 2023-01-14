@@ -1,0 +1,278 @@
+
+const fs = require('fs');
+const { exit, mainModule } = require('process');
+const readline = require('readline');
+const { kMaxLength } = require('buffer');
+const { log } = console;
+
+
+function stateToStr(stateMap) {
+    return [].concat.apply([], stateMap).join(".");
+}
+
+
+function puzzle_verifier(arr) {
+    i = 0;
+    j = 0
+    while (arr[i]) {
+        while (arr[i][j]) {
+            if ((arr[i][j] < '0' || arr[i][j] > '9'))
+                return -1
+            j++;
+        }
+        j = 0;
+        i++;
+    }
+
+    return 0;
+}
+
+
+function blok(s) {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            resolve()
+        }, s * 1000)
+    })
+}
+
+async function main() {
+    console.clear()
+    var stateMap = [ [ '0', '1', '3' ], [ '8', '2', '4' ], [ '7', '6', '5' ] ]
+    size = stateMap[0].length
+    print_map(stateMap)
+    log(`Size of puzzle : ${size}`)
+    log(`State in string : ${stateToStr(stateMap)}`)
+
+    const state = new State(stateMap, null, 'missPlaced', false, false)
+    openSet.set(state.hash, state)
+    log("Start", openSet.size)
+    let solution = null
+    let closedArr = []
+    array = state_to_arr(openSet)
+    let goal = generateGoal(array[0].stateMap.length, "ok")
+    log(array)
+    while (array.length) {
+
+        let subStates = []
+        if (array[0].hash == goal) {
+            log("end")
+            solution = array[0]
+            break
+        }
+        // break
+        subStates = array[0].generateSubStates()
+        if (subStates.find(l => l.hash === goal)) {
+            log("end")
+            solution = subStates.find(l => l.hash === goal)
+            break
+        }
+
+
+        array = [
+            ...array,
+            ...subStates.filter(l => !closedArr.includes(l) && !array.find(el => el.hash == l.hash))
+        ]
+        closedArr = [...new Set([...closedArr, array[0].hash])]
+      
+        array = array.filter(l => !closedArr.includes(l.hash))
+
+        array.sort((a, b) => a.score - b.score)
+      
+
+    }
+    print_map(solution.stateMap)
+    if (solution) {
+        return true
+    }
+}
+
+function heuristic_manhattan(position0, position1) {
+    let d1 = Math.abs(position1.x - position0.x);
+    let d2 = Math.abs(position1.y - position0.y);
+    return d1 + d2;
+}
+
+function generateGoal(mapSize, goalType){
+    goal = ""
+    for (let i = 0; i < mapSize; i++){
+        for (let j = 0; j < mapSize; j++){
+            if (i != mapSize - 1 ||  j != mapSize - 1){
+
+                goal += i * mapSize + j + 1
+                goal += '.'
+            }
+            else 
+                goal += '0'
+        }
+    }
+    return goal
+}
+
+var size = 0
+var openSet = new Map()
+var closedSet = new Map()
+
+
+
+class State {
+    constructor(stateMap, parent, heuristicName, greedy = false, uniform = false) {
+       
+        this.stateMap = stateMap;
+        this.parent = parent
+        this.heuristicToUse = heuristicName
+        this.level = (parent == undefined ?  -1 : parent.level) + 1
+        this.hash = [].concat.apply([], this.stateMap).join(".");
+        this.score = (uniform ? 0 : this.calculateScore())  + this.level
+    
+ 
+    }
+    // parseInt
+    calculateScore() {
+       
+        this.heuristic(this.heuristicToUse)
+        return this.heuristic(this.heuristicToUse)
+    }
+    heuristic(heur) {
+       
+        const goal = generateGoal(this.stateMap.length, "").split(".")
+        const manhattan = () => {
+            let score = 0
+            for (let i = 0; i < this.stateMap.length; i++) {
+
+                for (let j = 0; j < this.stateMap.length; j++) {
+
+                    const goalNumber = goal[i * this.stateMap.length + j]
+
+                    const targetCord = getCoordInMap(this.stateMap, goalNumber)
+                    const position0 = { 'x': j, 'y': i }
+                    const position1 = {
+                        'x': targetCord.x,
+                        'y': targetCord.y
+                    }
+                    const d1 = Math.abs(position1.x - position0.x);
+                    const d2 = Math.abs(position1.y - position0.y);
+
+                    score += d1 + d2;
+
+                }
+            }
+            return score
+        }
+
+        const missPlaced = () =>  {
+            let counter = 0
+            for (let i = 0; i < this.stateMap.length; i++) {
+                for (let j = 0; j < this.stateMap.length; j++) {
+                    const goalNumber = goal[i * this.stateMap.length + j]
+                    if (goalNumber !== this.stateMap[i][j])
+                        counter++
+                }
+            }
+
+            return counter
+        }
+        const heurs = {
+            'manhattan': manhattan,
+            'missPlaced' : missPlaced
+        }
+        return heurs[heur]()
+    }
+    generateSubStates() {
+        let zeroIdx = 0
+        let possibleStates = []
+        let size = stateMap[0].length
+        for (let i = 0; i < size; i++) {
+            for (let x = 0; x < size; x++) {
+                if (this.stateMap[i][x] == '0') {
+                    zeroIdx = { i, x }
+                    if (this.stateMap[i - 1]?.[x]) { possibleStates.push(swapWithZero(this.stateMap, zeroIdx, { 'i': i - 1, 'x': x })) }
+                    if (this.stateMap[i + 1]?.[x]) { possibleStates.push(swapWithZero(this.stateMap, zeroIdx, { 'i': i + 1, 'x': x })) }
+                    if (this.stateMap[i]?.[x + 1]) { possibleStates.push(swapWithZero(this.stateMap, zeroIdx, { 'i': i, 'x': x + 1 })) }
+                    if (this.stateMap[i]?.[x - 1]) { possibleStates.push(swapWithZero(this.stateMap, zeroIdx, { 'i': i, 'x': x - 1 })) }
+                    break
+                }
+            }
+        }
+    
+        const subs = possibleStates.map(pzl => new State(pzl, this, this.heuristicToUse))
+       
+        return subs
+    }
+    print(pzl = this.stateMap) {
+        log(' . . . . . . . . .')
+        for (let i = 0; i < size; i++) {
+            log(`: ${pzl[i].join(" ")} :`)
+        }
+    }
+}
+
+
+
+
+function copyObj(ubj) {
+    return JSON.parse(JSON.stringify(ubj))
+}
+
+function getCoordInMap(map, target) {
+   
+    for (let i = 0; i < map.length; i++) {
+        for (let j = 0; j < map.length; j++) {
+           
+            if (map[i][j] === target)
+                return { x: j, y: i }
+        }
+    }
+    return false
+}
+
+function print_map(map, score) {
+    line = ""
+    log("================")
+    let size = map.length
+    for (let i = 0; i < map.length; i++) {
+        for (let j = 0; j < map.length; j++){
+
+            line += map[i][j] + " ".repeat(((size * size).toString().length -  map[i][j].length)) + ' '
+            if (score != undefined && i == map.length -1 && j == map.length -1) 
+                line += "\x1b[33m  score: " + score + "\x1b[0m"
+        }
+        log(line)
+        line = ''
+    }
+    log("================")
+}
+
+function state_to_arr(stateSet) {
+    ret = []
+    for (let [key, value] of openSet.entries()) {
+        ret.push(value)
+    }
+    return ret
+}
+
+function strToArr(mapStr, size){
+    map =  mapStr.split('.')
+    mapArr = [[],[],[]]
+    for (let i = 0; i < size; i++){
+        for (let j = 0; j < size; j++){
+            if (map[i * size + j])
+                mapArr[i].push(map[i * size + j])
+            }
+        }
+    return (mapArr)
+}
+
+
+ function swapWithZero(stateMap, zeroIdx, move) {
+    const stateMapCopy = copyObj(stateMap)
+    const tmp = stateMapCopy[move.i][move.x]
+
+    stateMapCopy[move.i][move.x] = '0'
+    stateMapCopy[zeroIdx.i][zeroIdx.x] = tmp
+
+    return stateMapCopy
+}
+
+
+main()

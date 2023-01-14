@@ -5,3 +5,6 @@ convert openset and closedSet to array
 // keep the subStategenerator as it is
 // pop the first element in openSet (which we just did our logic on)
 // sort the openSet by the score value
+
+
+breadth-first search algorithm 
