@@ -4,7 +4,8 @@ const readline = require('readline');
 const { State } = require('./classes');
 const { print_map, state_to_arr, strToArr } = require('./utils');
 const { generateGoal } = require('./algo');
-var {size, openSet, closedSet,} = require('./globalVars');
+var { size, openSet, closedSet, } = require('./globalVars');
+const { kMaxLength } = require('buffer');
 const { log } = console;
 
 /**
@@ -87,41 +88,57 @@ async function main() {
     print_map(stateMap)
     log(`Size of puzzle : ${size}`)
     log(`State in string : ${stateToStr(stateMap)}`)
-    
-    const state = new State(stateMap, null)
+
+    const state = new State(stateMap, null, 'missPlaced', false, false)
     openSet.set(state.hash, state)
     log("Start", openSet.size)
     let solution = null
     let closedArr = []
     array = state_to_arr(openSet)
     let goal = generateGoal(array[0].stateMap.length, "ok")
+
     while (array.length) {
-        print_map(array[0].stateMap)
+
+
         let subStates = []
         if (array[0].hash == goal) {
             log("end")
             solution = array[0]
             break
         }
-         // break
+        // break
         subStates = array[0].generateSubStates()
-        // log("\n/////// children ///////// ")
-        // subStates.map((e)=>{print_map(strToArr(e.hash, size)), log(e.score)})
-        // log("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ \n")
-        // log("\wanted: ")
-        // print_map(strToArr(goal, size))
-        // log(array.map(l => l.score))
-        array = array.filter(l => !(l.hash === array[0].hash))
-        array = [...subStates.filter(sbs => !closedArr.includes(sbs.hash)), ...array]
-        closedArr.push(array[0].hash)
-        array.sort((a,b) => a.score-b.score)
-        console.clear()
+        if (subStates.find(l => l.hash === goal)) {
+            log("end")
+            solution = subStates.find(l => l.hash === goal)
+            break
+        }
+
+
+        array = [
+            ...array,
+            ...subStates.filter(l => !closedArr.includes(l) && !array.find(el => el.hash == l.hash))
+        ]
+        closedArr = [...new Set([...closedArr, array[0].hash])]
+      
+        array = array.filter(l => !closedArr.includes(l.hash))
+
+        array.sort((a, b) => a.score - b.score)
+        // console.clear()
         log("Open Array ", array.length)
         log("Closed Array ", closedArr.length)
-        //await blok(1)
-       
+        print_map(array[0].stateMap)
+        log("*********************************************")
+        subStates.filter(l => !closedArr.includes(l) && !array.find(el => el.hash == l.hash)).forEach(el => print_map(el.stateMap))
+        log("*********************************************")
+
+
+
+        await blok(1)
+
     }
     let steps = 0
+    print_map(solution.stateMap)
     while (solution.parent) {
         print_map(solution.parent.stateMap)
         await blok(1)

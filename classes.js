@@ -6,36 +6,67 @@ const { exit } = require('process');
 const { log } = console;
 
 class State {
-    constructor(stateMap, parent) {
+    constructor(stateMap, parent, heuristicName, greedy = false, uniform = false) {
+       
         this.stateMap = stateMap;
         this.parent = parent
-        this.level = (parent?.level || -1) + 1
+        this.heuristicToUse = heuristicName
+        this.level = (parent == undefined ?  -1 : parent.level) + 1
         this.hash = [].concat.apply([], this.stateMap).join(".");
-        this.score = this.calculateScore()  + this.level
+        this.score = (uniform ? 0 : this.calculateScore())  + this.level
+    
+ 
     }
     // parseInt
     calculateScore() {
-        let goal = strToArr(generateGoal(this.stateMap.length, ""), this.stateMap.length)
-        let score = 0
-        for (let i = 0; i < goal.length; i++) {
-        
-            for (let j = 0; j < goal.length; j++) {
-         
-                
-                const targetCord = getCoordInMap(this.stateMap, goal[i][j])
-                // log(goal[i][j],{'x':j, 'y':i}, targetCord)
-                score += heuristic_manhattan(
-                    {'x':j, 'y':i}, 
-                    {
-                        'x':targetCord.x, 
-                        'y':targetCord.y
-                    })
-           
+       
+        this.heuristic(this.heuristicToUse)
+        return this.heuristic(this.heuristicToUse)
+    }
+    heuristic(heur) {
+       
+        const goal = generateGoal(this.stateMap.length, "").split(".")
+        const manhattan = () => {
+            let score = 0
+            for (let i = 0; i < this.stateMap.length; i++) {
+
+                for (let j = 0; j < this.stateMap.length; j++) {
+
+                    const goalNumber = goal[i * this.stateMap.length + j]
+
+                    const targetCord = getCoordInMap(this.stateMap, goalNumber)
+                    const position0 = { 'x': j, 'y': i }
+                    const position1 = {
+                        'x': targetCord.x,
+                        'y': targetCord.y
+                    }
+                    const d1 = Math.abs(position1.x - position0.x);
+                    const d2 = Math.abs(position1.y - position0.y);
+
+                    score += d1 + d2;
+
+                }
+            }
+            return score
+        }
+
+        const missPlaced = () =>  {
+            let counter = 0
+            for (let i = 0; i < this.stateMap.length; i++) {
+                for (let j = 0; j < this.stateMap.length; j++) {
+                    const goalNumber = goal[i * this.stateMap.length + j]
+                    if (goalNumber !== this.stateMap[i][j])
+                        counter++
+                }
             }
 
+            return counter
         }
-       
-        return this.level + score
+        const heurs = {
+            'manhattan': manhattan,
+            'missPlaced' : missPlaced
+        }
+        return heurs[heur]()
     }
     generateSubStates() {
         let zeroIdx = 0
@@ -53,7 +84,10 @@ class State {
                 }
             }
         }
-        return possibleStates.map(pzl => new State(pzl, this))
+    
+        const subs = possibleStates.map(pzl => new State(pzl, this, this.heuristicToUse))
+       
+        return subs
     }
     print(pzl = this.stateMap) {
         log(' . . . . . . . . .')
@@ -66,4 +100,4 @@ class State {
 
 module.exports = {
     State,
-  };
+};

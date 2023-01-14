@@ -49,7 +49,7 @@ function strToArr(mapStr, size){
                 mapArr[i].push(map[i * size + j])
             }
         }
-    return(mapArr)
+    return (mapArr)
 }
 
 /**
