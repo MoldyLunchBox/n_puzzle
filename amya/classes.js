@@ -13,7 +13,7 @@ class State {
         this.heuristicToUse = heuristicName
         this.level = (parent == undefined ?  -1 : parent.level) + 1
         this.hash = [].concat.apply([], this.stateMap).join(".");
-        this.score = (uniform ? 0 : this.calculateScore())  
+        this.score = (uniform ? 0 : this.calculateScore())  + this.level
     
  
     }

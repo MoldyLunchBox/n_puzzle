@@ -80,5 +80,4 @@ module.exports = {
     swapWithZero,
     state_to_arr,
     strToArr,
-    
   };

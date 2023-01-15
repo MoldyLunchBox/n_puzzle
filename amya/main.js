@@ -99,16 +99,15 @@ async function main() {
     let solution = null
     let closedArr = []
     array = state_to_arr(openSet)
-    let goal = generateGoal(array[0].stateMap.length, "ok")
+    let goal = strToArr(generateGoal(array[0].stateMap.length, "ok"), 3)
     log(goal)
-    let goalArr = strToArr(goal, 3)
     while (array.length) {
 
         
-        log("curr state", array[0].level)
+        log("curr state")
         print_map(array[0].stateMap)
-        log(isSolvable(array[0].stateMap, goalArr, 3))
-        if (!isSolvable(array[0].stateMap, goalArr, 3))
+        log(isSolvable(array[0].stateMap, goal, 3))
+        if (!isSolvable(array[0].stateMap, goal, 3))
         {
             log("\n\n\n\n\n\n\n oh shit its false \n\n\n\n")
             exit()
@@ -150,18 +149,17 @@ async function main() {
         //subStates.filter(l => !closedArr.includes(l) && !array.find(el => el.hash == l.hash)).forEach(el => print_map(el.stateMap))
         subStates.map((e)=> print_map(e.stateMap, e.score))
         log("****************** end ******************\n\n\n")
-        
 
+        if (array.length > 10){
+            exit()
+        }
 
 
     }
     let steps = 0
-    if (!solution){
-        log("nop solution was found when in fact there should have been one\n PROBLEM!!!")
-        exit()
-    }
-    while (solution) {    
+    while (solution.parent) {
         print_map(solution.stateMap)
+        print_map(solution.parent.stateMap)
         await blok(1)
         solution = solution.parent
         steps++

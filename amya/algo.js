@@ -1,42 +1,22 @@
-const { exit } = require("process");
-const { getCoordInMap,} = require('./utils');
-const { log } = console;
-
 function heuristic_manhattan(position0, position1) {
     let d1 = Math.abs(position1.x - position0.x);
     let d2 = Math.abs(position1.y - position0.y);
     return d1 + d2;
 }
+
 function generateGoal(mapSize, goalType){
-    if (goalType == "zero_last"){
+    goal = ""
+    for (let i = 0; i < mapSize; i++){
+        for (let j = 0; j < mapSize; j++){
+            if (i != mapSize - 1 ||  j != mapSize - 1){
 
-        goal = ""
-        for (let i = 0; i < mapSize; i++){
-            for (let j = 0; j < mapSize; j++){
-                if (i != mapSize - 1 ||  j != mapSize - 1){
-                    
-                    goal += i * mapSize + j + 1
-                    goal += '.'
-                }
-                else 
-                goal += '0'
-            }
-        }
-    }
-    else{
-
-        goal = "0."
-        for (let i = 0; i < mapSize; i++){
-            for (let j = 0; j < mapSize; j++){
-                
                 goal += i * mapSize + j + 1
-                if (!(i == mapSize - 1  &&  j == mapSize - 1)){
-                    goal += '.'
-                }
+                goal += '.'
             }
+            else 
+                goal += '0'
         }
     }
-
     return goal
 }
 
@@ -95,10 +75,7 @@ function isSolvable(initial, goal, size = 3) {
     // Helper function to count inversions in a given state
     let initialInt = initial.map((e)=> e.map((el)=> parseInt(el)))
     let goalInt = goal.map((e)=> e.map((el)=> parseInt(el)))
-
-   
     function countInversions(state, size) {
-        log(state)
       let inversions = 0;
       for (let i = 0; i < size * size; i++) {
         for (let j = i + 1; j < size * size; j++) {
@@ -113,15 +90,12 @@ function isSolvable(initial, goal, size = 3) {
     let initialInversions = countInversions(initialInt, size);
     let goalInversions = countInversions(goalInt, size);
     // Check if the puzzle is solvable by comparing inversions
-    log((initialInversions  ))
-    log(goalInversions )
     if ((initialInversions % 2 === 0) === (goalInversions % 2 === 0)) {
       return true;
     } else {
       return false;
     }
   }
-
 
 
 module.exports = {
