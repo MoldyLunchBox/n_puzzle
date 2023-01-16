@@ -78,36 +78,23 @@ class State {
                 if (this.stateMap[i][x] == '0') {
                     zeroIdx = { i, x }
                     if (this.stateMap[i - 1]?.[x]) {
-                        log(swapWithZero(this.stateMap, zeroIdx, { 'i': i - 1, 'x': x }))
                         let  puz = swapWithZero(this.stateMap, zeroIdx, { 'i': i - 1, 'x': x })
-                        let good = isSolvable(puz, goal, puz.length)
-                        log("it's " , good)
-                        if (good)
-                            possibleStates.push(puz) 
+                        possibleStates.push(puz) 
                         
                     }
                     if (this.stateMap[i + 1]?.[x]) {
                         let puz = swapWithZero(this.stateMap, zeroIdx, { 'i': i + 1, 'x': x })
-                        let good = isSolvable(puz, goal, puz.length)
-                        log("it's " , good)
-                        if (good)
-                            possibleStates.push(puz) 
+                        possibleStates.push(puz) 
                         
                     }
                     if (this.stateMap[i]?.[x + 1]) {
                         let puz = swapWithZero(this.stateMap, zeroIdx, { 'i': i, 'x': x + 1 })
-                        let good = isSolvable(puz, goal, puz.length)
-                        log("it's " , good)
-                        if (good)
-                            possibleStates.push(puz) 
+                        possibleStates.push(puz) 
                         
                     }
                     if (this.stateMap[i]?.[x - 1]) {
                         let puz = swapWithZero(this.stateMap, zeroIdx, { 'i': i, 'x': x - 1 })
-                        let good = isSolvable(puz, goal, puz.length)
-                        log("it's " , good)
-                        if (good)
-                            possibleStates.push(puz) 
+                        possibleStates.push(puz) 
                         
                     }
                     break
@@ -116,8 +103,6 @@ class State {
         }
     
         const subs = possibleStates.map(pzl => new State(pzl, this, this.heuristicToUse))
-       log (subs.length)
-       log("\n\n\n\n\n\n")
         return subs
     }
     print(pzl = this.stateMap) {

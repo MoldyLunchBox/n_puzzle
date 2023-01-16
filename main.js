@@ -107,12 +107,7 @@ async function main() {
         
         log("curr state", array[0].level)
         print_map(array[0].stateMap)
-        log(isSolvable(array[0].stateMap, goalArr, 3))
-        if (!isSolvable(array[0].stateMap, goalArr, 3))
-        {
-            log("\n\n\n\n\n\n\n oh shit its false \n\n\n\n")
-            exit()
-        }
+      
         
         // if (array[0].hash == "8.1.3.0.2.4.7.6.5"){
         //     log("-----------array-------------")
@@ -134,13 +129,23 @@ async function main() {
         }
 
 
+        closedArr = [...new Set([...closedArr, array[0].hash])]
         array = [
             ...array,
             ...subStates.filter(l => !closedArr.includes(l) && !array.find(el => el.hash == l.hash))
         ]
-        closedArr = [...new Set([...closedArr, array[0].hash])]
-      
+        array.shift()
         array = array.filter(l => !closedArr.includes(l.hash))
+
+        // just to make sure no closed states are in the open states
+        closedArr.forEach(el => {
+            let elementPos = array.map(function(x) {return x.hash; }).indexOf(el);
+            let objectFound = array[elementPos];
+            if (elementPos != -1){
+                log(el," closed state was found in open states at index ", elementPos, " hash:", objectFound.hash)
+                exit()
+            }
+        })
 
         array.sort((a, b) => a.score - b.score)
         // console.clear()
