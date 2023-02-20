@@ -1,0 +1,10 @@
+$grid-gap: 10px;
+input { 
+    text-align: center; 
+}
+.grid-Container {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-columns), 1fr);
+  grid-template-rows: repeat(var(--grid-rows), 100px);
+  gap: $grid-gap;
+}
