@@ -9,7 +9,7 @@ function DropDownMenu(props) {
       <select
         onChange={mapSizeChange}
         id="mapSzie"
-        className="text-center bg-gray-50 border border-gray-300\
+        className="text-center bg-gray-50 my-5 bg-green-200 border border-gray-300\
          text-gray-900 text-sm rounded focus:ring-blue-500\
           focus:border-blue-500 block p-2.5 dark:bg-gray-700\
            dark:border-gray-600 dark:placeholder-gray-400\
