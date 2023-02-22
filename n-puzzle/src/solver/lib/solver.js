@@ -35,8 +35,8 @@ export default class Solver {
 		let count = 0;
 
 		// store the current timestamp in start variable to be used later for execution time calculation
-		const start = process.hrtime();
-
+		//const start = process.hrtime();
+		const start = window.performance.now();
 		// loop while the queue is not empty and solution is not found yet
 		while (!this.solution && !this.queue.isEmpty()) {
 			// extract the first node in queue and pop it from the queue list
@@ -64,7 +64,8 @@ export default class Solver {
 			}
 		}
 		// calc the diff time between start and now, store the output in time
-		const time = process.hrtime(start);
+		//const time = process.hrtime(start);
+		const time = window.performance.now() - start;
 		// build a history of steps made from the start puzzle to the goal puzzle with buildScenario() method
 		const steps = await this.buildScenario();
 
@@ -72,10 +73,10 @@ export default class Solver {
 		// complexity in size : the max number of nodes where pending in Queue at the same time.
 		// time               : time spent to find the solution
 		return {
-			steps,
-			cTime: count,
-			cSize: this.queue.maxOpen,
-			time,
+			steps
+			// cTime: count,
+			// cSize: this.queue.maxOpen,
+			// time,
 		};
 	}
 }

@@ -37,14 +37,17 @@ export async function solver() {
 
 	if (solution) {
 		const steps = solution.steps
+		return (steps)
 		const t = { s: solution.time[0], m: parseFloat((solution.time[1] / 1000000).toFixed(3)) }
 
 		// animate the steps in consol
+		log("solver")
 		for (let i = 0; i < steps.length; i++) {
-			console.clear()
-			printPuzzle(steps[i][0], steps[i][1])
-			log(`Step n: ${i + 1}/${steps.length}`)
-			await blok(0.1)
+			log(steps[i][0])
+			//console.clear()
+			//printPuzzle(steps[i][0], steps[i][1])
+			//log(`Step n: ${i + 1}/${steps.length}`)
+			//await blok(0.1)
 		}
 
 		// print required detailes about the solution asked in the subject pdf
@@ -56,6 +59,6 @@ export async function solver() {
 		log('---------------------------------------------')
 	} else
 		log("[ Sorry i cant solve this, take that s**t away from me, thanks! ]")
-
+	return null;
 }
 
