@@ -12,6 +12,7 @@ function Grid(props) {
   }
   log("grid")
   log(numbers[0])
+  log("mapsiz", mapSize)
   const gridItems = [];
   for (let i = 0; i < mapSize ; i++) {
     for (let j = 0; j < mapSize; j++) {

@@ -36,6 +36,10 @@ function App() {
   const mapSizeChange = (event) => {
     const val = event.target.value;
     setMapSize(val); 
+   
+      log('yo')
+      setValues(splitArrayIntoChunks([0, 1, 2, 3, 4, 5, 6, 7, 8,9,10,11,12,13,14,15], 4))
+
     const gridContainer = document.querySelector('.grid-Container');
     gridContainer.style.gridTemplateColumns = `repeat(${val}, 1fr)`;
     gridContainer.style.gridTemplateRows = `repeat(${val}, 100px)`;
