@@ -1,6 +1,5 @@
 import React from "react";
 import Grid from './components/Grid';
-import EditMap from './components/EditMap';
 import './App.scss';
 
 import DropDownMenu from './components/DropDownMenu';
@@ -31,22 +30,6 @@ function App() {
     const gridContainer = document.querySelector('.grid-Container');
     gridContainer.style.gridTemplateColumns = `repeat(${sizeMap}, 1fr)`;
     gridContainer.style.gridTemplateRows = `repeat(${sizeMap}, 100px)`;
-    
-    const draggableElements = document.querySelectorAll('.gridItem');
-
-    // Loop through each draggable element and modify its class
-    for (let i = 0; i < draggableElements.length; i++) {
-      const element = draggableElements[i];
-      const inputElement = element.querySelector('input');
-      log(inputElement.value)
-      if (inputElement == 0){
-        element.setAttribute('draggable', 'true');
-      }
-      // element.classList.add('new-class'); // Add a new class
-      // element.classList.remove('old-class'); // Remove an old class
-      // You can also use the toggle() method to add or remove a class based on its presence
-      // element.classList.toggle('selected');
-}
   });
 
   // handling grid size when map size has changed 
@@ -70,14 +53,6 @@ function App() {
     }
     return output;
   }
-
-  // map edit
-  const mapEdit = (newMap) =>{
-    log("newmap", splitArrayIntoChunks(newMap, 3))
-    setValues(splitArrayIntoChunks(newMap, 3))
-
-  }
-
   // handling submit by saving the input numbers to an array of numbers
   const onFinish  = async (values) => {
     values.preventDefault()
@@ -112,7 +87,7 @@ function App() {
               <div className=" w-24 mx-5">
                   <DropDownMenu className="my-5 py-2" mapSizeChange={mapSizeChange} />
                   <button type="submit" className="my-5 py-2  w-full rounded bg-blue-400 text-white">Submit</button>
-                  <EditMap mapEdit={mapEdit}/>
+                  <button  className="my-5 py-2  w-full rounded bg-red-400 text-white">Clear</button>
                
               </div>
 

@@ -17,8 +17,8 @@ function Grid(props) {
   for (let i = 0; i < mapSize ; i++) {
     for (let j = 0; j < mapSize; j++) {
       gridItems.push(
-        <div key={i * mapSize + j} className="h-full bg-gray-200 p-4 aspect-w-1 aspect-h-1">
-          <input onChange={handleChange} value={numbers[0][i][j]} type="number" min="0" max={mapSize * mapSize} className="w-full h-full text-3xl" />
+        <div key={i * mapSize + j} draggable="true" className="gridItem fill h-full bg-gray-200 p-4 aspect-w-1 aspect-h-1">
+          <input onChange={handleChange}  value={numbers[i][j]}className="fill w-full h-full text-3xl" readOnly />
         </div>
       );
     }
