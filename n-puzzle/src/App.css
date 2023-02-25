@@ -60,12 +60,7 @@
 }
 
 .empty {
-  display: inline-block;
-  height: 160px;
-  width: 160px;
-  margin: 10px;
   border: solid 3px salmon;
-  background: white;
 }
 
 .hovered {
