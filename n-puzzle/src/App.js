@@ -15,7 +15,7 @@ const { log } = console;
 
 function App() {
   // map values
-  const [values, setValues] = useState([[4, 1, 2], [3, 0, 5], [6, 7, 8]]);
+  const [values, setValues] = useState([[4, 1, 2], [3, 7, 5], [6, 0, 8]]);
   // the valid map values generated acording to map size
   const [validNumbers, setValidNumbers] = useState([4, 1, 2, 3, 0, 5, 6, 7, 8]);
   // submit state, to indicate whether the submit button was pressed and it's succesful or not
@@ -37,9 +37,11 @@ function App() {
 
     // Loop through each draggable element and modify its attribute to make them non draggable
     for (let i = 0; i < draggableElements.length; i++) {
+ 
+
       const element = draggableElements[i];
       const inputElement = element.querySelector('input');
-      log(inputElement.value)
+
       if (inputElement.value == 0)
         indexOfZero = i
       element.setAttribute('draggable', 'false');
@@ -59,8 +61,8 @@ function App() {
       draggableElements[indexOfZero - 1].classList.add('empty');
 
     }
-    if (indexOfZero < mapSize * mapSize) {
-
+    if (indexOfZero + 1 < mapSize * mapSize) {
+      log("index of zero : ", indexOfZero)
       draggableElements[indexOfZero + 1].classList.add('empty');
     }
     if (indexOfZero + mapSize <= mapSize * mapSize) {
@@ -72,6 +74,53 @@ function App() {
       draggableElements[indexOfZero - mapSize].classList.add('empty');
     }
 
+    function dragStart() {
+      draggedFill = this;
+      log("start")
+      // this.className += ' hold';
+      //setTimeout(() => (this.className = 'invisible'), 0);
+    }
+
+    function dragEnd() {
+      draggedFill.classList.remove('fill');
+      //this.classList.add('fill');
+    }
+
+    function dragOver(e) {
+      e.preventDefault();
+    }
+
+    function dragEnter(e) {
+      e.preventDefault();
+      //this.className += ' hovered';
+
+    }
+    function dragDrop() {
+
+      const dup = values.slice()
+      const tmp = this.querySelector('input').value;
+      log("dropping", 0, " on", this.querySelector('input').value)
+      log(draggedFill)
+      log(this)
+      dup[findIndex(values, parseInt(tmp)).i][findIndex(values, parseInt(tmp)).j] = 0
+      dup[parseInt(indexOfZero / mapSize)][indexOfZero % mapSize] = parseInt(tmp)
+   
+      setValues(dup)
+
+
+
+    }
+    const gridItems = document.getElementsByClassName('grid-item');
+
+    for (let i = 0; i < gridItems.length; i++) {
+      gridItems[i].removeEventListener('dragover', dragOver);
+      gridItems[i].removeEventListener('dragenter', dragEnter);
+      // gridItems[i].removeEventListener('dragleave', dragLeave);
+      gridItems[i].removeEventListener('drop', dragDrop);
+      gridItems[i].removeEventListener('dragstart', dragStart);
+      gridItems[i].removeEventListener('dragend', dragEnd);
+    }
+    
     let fill = document.querySelector('.fill');
     let empties = document.querySelectorAll('.empty');
     let tmp = fill;
@@ -84,41 +133,18 @@ function App() {
     let draggedFill = null;
 
 
-    function dragStart() {
-      draggedFill = this;
-      log("start")
-      this.className += ' hold';
-      //setTimeout(() => (this.className = 'invisible'), 0);
-    }
-
-    function dragEnd() {
-      this.className = 'fill';
-    }
-
-    function dragOver(e) {
-      e.preventDefault();
-    }
-
-    function dragEnter(e) {
-      e.preventDefault();
-      this.className += ' hovered';
-
-    }
-
     // function dragLeave() {
     //   this.className = 'empty';
     // }
-
-    function dragDrop() {
-      log("before")
-      let parent1 = draggedFill.parentNode;
-      let next1 = draggedFill.nextSibling;
-      let parent2 = this.parentNode;
-      let next2 = this.nextSibling;
-      
-      parent1.insertBefore(this, next1);
-      
-      parent2.insertBefore(draggedFill, next2);
+    function findIndex(array, number) {
+      for (let i = 0; i < array.length; i++) {
+        for (let j = 0; j < array[i].length; j++) {
+          if (array[i][j] === number) {
+            return { i, j };
+          }
+        }
+      }
+      return null;
     }
 
 
