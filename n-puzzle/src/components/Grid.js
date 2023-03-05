@@ -2,23 +2,23 @@ import React from "react";
 import '../App.css';
 const { log } = console;
 function Grid(props) {
-  const { numbers, mapSize, validNumbers } = props;
-  const handleChange = (event) => {
-    const valid_Numbers = new Set(validNumbers);
-    if (!valid_Numbers.has(parseInt(event.target.value)))
-      event.target.style.color = "red";
-    else
-      event.target.style.color = "black";
-  }
+  const { values, mapSize } = props;
+  // const handleChange = (event) => {
+  //   const valid_Numbers = new Set(validNumbers);
+  //   if (!valid_Numbers.has(parseInt(event.target.value)))
+  //     event.target.style.color = "red";
+  //   else
+  //     event.target.style.color = "black";
+  // }
   log("grid")
-  log(numbers[0])
+  log(values)
   log("mapsiz", mapSize)
   const gridItems = [];
   for (let i = 0; i < mapSize ; i++) {
     for (let j = 0; j < mapSize; j++) {
       gridItems.push(
-        <div key={i * mapSize + j}  id={numbers[i][j]} draggable="true" className="gridItem  h-full bg-gray-200 p-4 aspect-w-1 aspect-h-1">
-          <input onChange={handleChange}  value={numbers[i][j]}className=" w-full h-full text-3xl" readOnly />
+        <div key={i * mapSize + j}  id={values[i][j]} draggable="true" className="gridItem  h-full bg-gray-200 p-4 aspect-w-1 aspect-h-1">
+          <input  value={values[i][j]}className=" w-full h-full text-3xl" readOnly />
         </div>
       );
     }
