@@ -3,9 +3,9 @@ const {log} = console
 export default function EditMap(props) {
   const [showModal, setShowModal] = React.useState(false);
   const [inputValue, setInputValue] = useState("")
-  const {mapEdit} =  props
+  const {mapEdit, setValues} =  props
   const saveMap = (e) =>{
-    mapEdit(inputValue.split(" "))
+    mapEdit(inputValue.split(" "), setValues)
     setShowModal(false)
   }
 

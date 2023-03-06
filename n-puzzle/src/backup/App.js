@@ -74,42 +74,7 @@ function App() {
       draggableElements[indexOfZero - mapSize].classList.add('empty');
     }
 
-    function dragStart() {
-      draggedFill = this;
-      log("start")
-      // this.className += ' hold';
-      //setTimeout(() => (this.className = 'invisible'), 0);
-    }
 
-    function dragEnd() {
-      draggedFill.classList.remove('fill');
-      //this.classList.add('fill');
-    }
-
-    function dragOver(e) {
-      e.preventDefault();
-    }
-
-    function dragEnter(e) {
-      e.preventDefault();
-      //this.className += ' hovered';
-
-    }
-    function dragDrop() {
-
-      const dup = values.slice()
-      const tmp = this.querySelector('input').value;
-      log("dropping", 0, " on", this.querySelector('input').value)
-      log(draggedFill)
-      log(this)
-      dup[findIndex(values, parseInt(tmp)).i][findIndex(values, parseInt(tmp)).j] = 0
-      dup[parseInt(indexOfZero / mapSize)][indexOfZero % mapSize] = parseInt(tmp)
-   
-      setValues(dup)
-
-
-
-    }
     const gridItems = document.getElementsByClassName('grid-item');
 
     for (let i = 0; i < gridItems.length; i++) {
@@ -136,16 +101,7 @@ function App() {
     // function dragLeave() {
     //   this.className = 'empty';
     // }
-    function findIndex(array, number) {
-      for (let i = 0; i < array.length; i++) {
-        for (let j = 0; j < array[i].length; j++) {
-          if (array[i][j] === number) {
-            return { i, j };
-          }
-        }
-      }
-      return null;
-    }
+
 
 
 
@@ -182,11 +138,7 @@ function App() {
   }
 
   // map edit
-  const mapEdit = (newMap) => {
-    log("newmap", splitArrayIntoChunks(newMap, 3))
-    setValues(splitArrayIntoChunks(newMap, 3))
 
-  }
 
   // handling submit by saving the input numbers to an array of numbers
   const onFinish = async (values) => {

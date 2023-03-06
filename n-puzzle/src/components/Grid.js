@@ -10,15 +10,17 @@ function Grid(props) {
   //   else
   //     event.target.style.color = "black";
   // }
-  log("grid")
-  log(values)
+  log("length", values)
+  log(values.length)
   log("mapsiz", mapSize)
   const gridItems = [];
   for (let i = 0; i < mapSize ; i++) {
     for (let j = 0; j < mapSize; j++) {
       gridItems.push(
-        <div key={i * mapSize + j}  id={values[i][j]} draggable="true" className="gridItem  h-full bg-gray-200 p-4 aspect-w-1 aspect-h-1">
-          <input  value={values[i][j]}className=" w-full h-full text-3xl" readOnly />
+        <div key={i * mapSize + j}  id={i * mapSize + j} draggable="true" className="gridItem  h-full bg-gray-200 p-4 aspect-w-1 aspect-h-1">
+          {/* <input  value={values[i][j]}className=" w-full h-full text-3xl" readOnly /> */}
+          <input value={values.length === mapSize * mapSize ? values[i * mapSize + j]  : ""} className="w-full h-full text-3xl" readOnly />
+
         </div>
       );
     }

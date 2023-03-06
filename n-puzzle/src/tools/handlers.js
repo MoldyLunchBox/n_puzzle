@@ -16,6 +16,11 @@ function createNumberArray(num) {
   return arr;
 }
 
+export const mapEdit = (newMap, setValues) => {
+  setValues(newMap.map((e)=> parseInt(e)))
+
+}
+
 export const onSubmit = async (values) => {
   values.preventDefault()
   const inputs = Array.from(document.querySelectorAll('input[type="number"]'));
