@@ -17,7 +17,7 @@ function Grid(props) {
   for (let i = 0; i < mapSize ; i++) {
     for (let j = 0; j < mapSize; j++) {
       gridItems.push(
-        <div key={i * mapSize + j}  id={i * mapSize + j} draggable="true" className="gridItem  h-full bg-gray-200 p-4 aspect-w-1 aspect-h-1">
+        <div key={i * mapSize + j}  id={i * mapSize + j} dropzone="move" draggable="true" className="gridItem  h-full bg-gray-200 p-4 aspect-w-1 aspect-h-1">
           {/* <input  value={values[i][j]}className=" w-full h-full text-3xl" readOnly /> */}
           <input value={values.length === mapSize * mapSize ? values[i * mapSize + j]  : ""} className="w-full h-full text-3xl" readOnly />
 
@@ -25,7 +25,13 @@ function Grid(props) {
       );
     }
   }
+//   return <>
+//   {[...Array(mapSize)].map((_, i) => [...Array(mapSize)].map((_, j) => (<div key={i * mapSize + j}  id={i * mapSize + j} dropzone="move" draggable="true" className="gridItem  h-full bg-gray-200 p-4 aspect-w-1 aspect-h-1">
+//         {/* <input  value={values[i][j]}className=" w-full h-full text-3xl" readOnly /> */}
+//         <input value={values.length === mapSize * mapSize ? values[i * mapSize + j]  : ""} className="w-full h-full text-3xl" readOnly />
 
+//       </div>)))}
+// </>;
   return gridItems;
 
 }

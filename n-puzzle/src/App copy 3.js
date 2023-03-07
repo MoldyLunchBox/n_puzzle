@@ -64,7 +64,21 @@ function App() {
       
       parent2.insertBefore(draggedFill, next2);
     }
+    function dragDrop() {
 
+      const dup = values.slice()
+      const tmp = this.querySelector('input').value;
+      log("dropping", 0, " on", this.querySelector('input').value)
+      log(draggedFill)
+      log(this)
+      dup[findIndex(values, parseInt(tmp)).i][findIndex(values, parseInt(tmp)).j] = 0
+      dup[parseInt(indexOfZero / mapSize)][indexOfZero % mapSize] = parseInt(tmp)
+
+      setValues(dup)
+
+
+
+    }
     // function dragDrop() {
     //   this.className = 'empty';
     //   this.append(fill);
