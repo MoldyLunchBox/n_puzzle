@@ -47,6 +47,7 @@ export function dragStart(e, values, setValues, mapSize, draggableElements, drop
   
   function dragLeave() {
     log("dragLeave")
+    
     //this.classList.add('fill');
   }
   
