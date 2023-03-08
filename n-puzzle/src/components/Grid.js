@@ -1,6 +1,7 @@
 import React from "react";
 import '../App.css';
 const { log } = console;
+
 function Grid(props) {
   const { values, mapSize } = props;
   // const handleChange = (event) => {

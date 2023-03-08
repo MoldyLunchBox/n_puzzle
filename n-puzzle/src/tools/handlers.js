@@ -40,41 +40,47 @@ export const mapSizeChange = (event, setMapSize, setValues) => {
   // gridContainer.style.gridTemplateRows = `repeat(${val}, 100px)`;
 };
 
-function dragDropUp(e, map, setValues, mapSize) {
+function dragDropUp(element, map, setValues, mapSize) {
   log("up")
   const dup = map.slice()
   const indexOfZero = map.indexOf(0)
   dup[indexOfZero] = dup[indexOfZero - mapSize]
   dup[indexOfZero - mapSize] = 0
+  removeEvents(element)
   setValues(dup)
-
   //this.classList.add('fill');
 }
-function dragDropDown(e, map, setValues, mapSize) {
+function dragDropDown(element, map, setValues, mapSize) {
   log("down")
   const dup = map.slice()
   const indexOfZero = map.indexOf(0)
   dup[indexOfZero] = dup[indexOfZero + mapSize]
   dup[indexOfZero + mapSize] = 0
+  removeEvents(element)
   setValues(dup)
+
   //this.classList.add('fill');
 }
-function dragDropLeft(e, map, setValues) {
+function dragDropLeft(element, map, setValues) {
   log("left")
   const dup = map.slice()
   const indexOfZero = map.indexOf(0)
   dup[indexOfZero] = dup[indexOfZero - 1]
   dup[indexOfZero - 1] = 0
-  setValues(dup)
+  removeEvents(element)
+  //setValues(dup)
+
   //this.classList.add('fill');
 }
-function dragDropRight(e, map, setValues) {
+function dragDropRight(element, map, setValues) {
   log("right")
   const dup = map.slice()
   const indexOfZero = map.indexOf(0)
   dup[indexOfZero] = dup[indexOfZero + 1]
   dup[indexOfZero + 1] = 0
+  removeEvents(element)
   setValues(dup)
+
   //this.classList.add('fill');
 }
 
@@ -91,17 +97,32 @@ function dragLeave() {
   //this.classList.add('fill');
 }
 
-export const attachDragEvents = (element, dropDirection, map, setValues, mapSize) => {
-  element.addEventListener('dragover', dragOver);
-  element.addEventListener('dragenter', dragEnter);
-  element.addEventListener('dragleave', dragLeave);
-  element.classList.add('empty');
-  if (dropDirection == "up")
-    element.addEventListener('drop', (e) => dragDropUp(e, map, setValues, mapSize));
-  if (dropDirection == "down")
-    element.addEventListener('drop', (e) => dragDropDown(e, map, setValues, mapSize));
-  if (dropDirection == "left")
-    element.addEventListener('drop', (e) => dragDropLeft(e, map, setValues));
-  if (dropDirection == "right")
-    element.addEventListener('drop', (e) => dragDropRight(e, map, setValues));
+
+function  removeEvents(element) {
+  element.removeEventListener("dragover", dragOver);
+  element.removeEventListener("dragenter", dragEnter);
+  element.removeEventListener("dragleave", dragLeave);
+
+  element.removeEventListener("drop", dragDropUp);
+  element.removeEventListener("drop", dragDropDown);
+  element.removeEventListener("drop", dragDropLeft);
+  element.removeEventListener("drop", dragDropRight);
+  log("----- events are removed from ", element)
 }
+
+// export const attachDragEvents = (element, dropDirection, map, setValues, mapSize) => {
+//   element.addEventListener('dragover', dragOver);
+//   element.addEventListener('dragenter', dragEnter);
+//   element.addEventListener('dragleave', dragLeave);
+//   element.classList.add('empty');
+//   if (dropDirection == "up")
+//     element.addEventListener('drop', (e) => dragDropUp(element, map, setValues, mapSize));
+//   if (dropDirection == "down")
+//     element.addEventListener('drop', (e) => dragDropDown(element, map, setValues, mapSize));
+//   if (dropDirection == "left")
+//     element.addEventListener('drop', (e) => dragDropLeft(element, map, setValues));
+//   if (dropDirection == "right")
+//     element.addEventListener('drop', (e) => dragDropRight(element, map, setValues));
+//   log("----- events are added  ")
+
+// }

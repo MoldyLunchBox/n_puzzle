@@ -3,6 +3,8 @@ import Grid from "./Grid"
 import EditMap from "./EditMap"
 import { mapEdit } from "../tools/handlers"
 import DropDownMenu from "./DropDownMenu"
+
+
 export default function Puzzle({onSubmit, values, mapSize, mapSizeChange, setValues, setMapSize}){
     return (
         <form onSubmit={onSubmit}>
@@ -19,10 +21,7 @@ export default function Puzzle({onSubmit, values, mapSize, mapSizeChange, setVal
                 <DropDownMenu className="my-5 py-2" mapSizeChange={(event) => mapSizeChange(event, setMapSize, setValues)} />
                 <EditMap setValues={setValues} mapEdit={mapEdit} /> 
                 <button type="submit" className="my-5 py-2  w-full rounded bg-blue-400 text-white">Submit</button>
-
               </div>
-
-
             </div>
           </div>
         </div>
