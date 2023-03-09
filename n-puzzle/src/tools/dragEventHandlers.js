@@ -1,6 +1,6 @@
 const { log } = console;
-export function drop(e, values, setValues, mapSize, draggableElements, movedPiece) {
-    log(movedPiece, "is dropped here")
+export function drop(e, values, setValues, mapSize, draggableElements, movedPiece, dropHandler) {
+    log(dropHandler, "is dropped here")
     const dup = values.slice()
     const empty = values.indexOf(0)
     const piece = values.indexOf(movedPiece)
@@ -8,10 +8,8 @@ export function drop(e, values, setValues, mapSize, draggableElements, movedPiec
     dup[empty] = dup[piece]
     dup[piece] = 0
 
-    removeEvents(draggableElements)
-    setValues(dup)
-
-    
+    //removeEvents(draggableElements, dropHandler)
+    setValues(dup)    
 }
 export function dragStart(e, values, setValues, mapSize, draggableElements, dropHandler) {
     log(" drag start",e.target.childNodes[0].value)
@@ -34,10 +32,10 @@ export function dragStart(e, values, setValues, mapSize, draggableElements, drop
     e.preventDefault();
   }
 
-  function dragEnd(e, draggableElements) {
+  function dragEnd(e, draggableElements, dropHandler) {
     e.preventDefault();
     log("events removed")
-    removeEvents(draggableElements)
+    removeEvents(draggableElements, dropHandler)
 
   }
 
@@ -69,8 +67,8 @@ export function dragStart(e, values, setValues, mapSize, draggableElements, drop
 
   export const attachDragEvents = (element, values, setValues, mapSize, draggableElements) => {
 
-    const dropHandler = (e) => drop(e, values, setValues, mapSize, draggableElements, 2);
-
-    element.addEventListener('dragstart', (e) => dragStart(e, values, setValues, mapSize, draggableElements, dropHandler));
-    element.addEventListener('dragend', (e) => dragEnd(e, draggableElements, dropHandler));
+    const dropHandler = (e) => drop(e, values, setValues, mapSize, draggableElements,parseInt(element.childNodes[0].value), dropHandler);
+    const dragStartRef = (e) => dragStart(e, values, setValues, mapSize, draggableElements, dropHandler, dragStartRef)
+    element.addEventListener('dragstart', dragStartRef);
+    element.addEventListener('dragend', (e) => dragEnd(e, draggableElements, dropHandler, dragStartRef));
 }
