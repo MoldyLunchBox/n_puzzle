@@ -15,7 +15,7 @@ import { useState, useEffect } from "react";
 import { solver } from './solver';
 import PuzzleSteps from "./components/PuzzleSteps";
 import { onSubmit, mapSizeChange,  } from "./tools/handlers";
-import { dragStart, attachDragEvents} from "./tools/dragEventHandlers";
+import { dragStart, attachDragEvents, attackDragEvents} from "./tools/dragEventHandlers";
 const { log } = console;
 
 function App() {
@@ -58,16 +58,16 @@ function App() {
 
     // draggableElement[indexOfZero].addEventListener('dragend', dragEnd);
     // draggableElement[indexOfZero].addEventListener('dragstart', (e) => dragStart(e, values, setValues, mapSize, draggableElement));
-
+    const startEvents = []
     if (indexOfZero > 0 && parseInt(indexOfZero / mapSize) == parseInt((indexOfZero - 1) / mapSize))
-      attachDragEvents(draggableElement[indexOfZero - 1], values, setValues, mapSize, draggableElement)
+      startEvents.push(attachDragEvents(draggableElement[indexOfZero - 1], values, setValues, mapSize, draggableElement))
     if (indexOfZero + 1 < mapSize * mapSize && parseInt(indexOfZero / mapSize) == parseInt((indexOfZero + 1) / mapSize))
-      attachDragEvents(draggableElement[indexOfZero + 1], values, setValues, mapSize, draggableElement)
+      startEvents.push(attachDragEvents(draggableElement[indexOfZero + 1], values, setValues, mapSize, draggableElement))
     if (indexOfZero + mapSize <= mapSize * mapSize)
-      attachDragEvents(draggableElement[indexOfZero + mapSize], values, setValues, mapSize, draggableElement)
+      startEvents.push(attachDragEvents(draggableElement[indexOfZero + mapSize], values, setValues, mapSize, draggableElement))
     if (indexOfZero - mapSize >= 0)
-      attachDragEvents(draggableElement[indexOfZero - mapSize], values, setValues, mapSize, draggableElement)
-
+      startEvents.push(attachDragEvents(draggableElement[indexOfZero - mapSize], values, setValues, mapSize, draggableElement))
+    attackDragEvents(startEvents)
     // if (indexOfZero > 0 && parseInt(indexOfZero / mapSize) == parseInt((indexOfZero - 1) / mapSize) )
     //   attachDragEvents(draggableElement[indexOfZero - 1], "left", values, setValues, mapSize)
     // if (indexOfZero + 1 < mapSize * mapSize && parseInt(indexOfZero / mapSize) == parseInt((indexOfZero + 1) / mapSize))
