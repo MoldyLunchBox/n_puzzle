@@ -43,7 +43,8 @@ function App() {
     gridContainer.style.gridTemplateRows = `repeat(${mapSize}, 100px)`;
 
     let draggableElements = document.querySelectorAll('.gridItem');
-    for (let i = 0; i < draggableElements.length; i++) {
+    let i = 0;
+    for (i = 0; i < draggableElements.length; i++) {
 
       const element = draggableElements[i];
 
@@ -67,7 +68,7 @@ function App() {
       startEvents.push(attachDragEvents(draggableElement[indexOfZero + mapSize], values, setValues, mapSize, draggableElement))
     if (indexOfZero - mapSize >= 0)
       startEvents.push(attachDragEvents(draggableElement[indexOfZero - mapSize], values, setValues, mapSize, draggableElement))
-    attackDragEvents(startEvents)
+    attackDragEvents(startEvents, draggableElements[indexOfZero], draggableElement)
     // if (indexOfZero > 0 && parseInt(indexOfZero / mapSize) == parseInt((indexOfZero - 1) / mapSize) )
     //   attachDragEvents(draggableElement[indexOfZero - 1], "left", values, setValues, mapSize)
     // if (indexOfZero + 1 < mapSize * mapSize && parseInt(indexOfZero / mapSize) == parseInt((indexOfZero + 1) / mapSize))

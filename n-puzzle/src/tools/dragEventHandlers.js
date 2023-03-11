@@ -8,7 +8,7 @@ export function drop(e, values, setValues, mapSize, draggableElements, movedPiec
     dup[empty] = dup[piece]
     dup[piece] = 0
 
-    //removeEvents(draggableElements, dropHandler)
+    removeEvents(draggableElements, dropHandler)
     setValues(dup)    
 }
 export function dragStart(e, values, setValues, mapSize, draggableElements, dropHandler, dragStartRef) {
@@ -24,7 +24,7 @@ export function dragStart(e, values, setValues, mapSize, draggableElements, drop
       draggableElements[i].addEventListener('dragover', dragOver)
       draggableElements[i].addEventListener('dragenter', dragEnter)
       draggableElements[i].addEventListener('dragleave', dragLeave)
-      draggableElements[i].addEventListener('drop', dropHandler, )
+      draggableElements[i].addEventListener('drop', dropHandler )
       
   }
 
@@ -64,13 +64,23 @@ export function dragStart(e, values, setValues, mapSize, draggableElements, drop
         log("events are removed", element.removeEventListener("dragstart", dragStart))
       }
   }
-  function removeDragStart(){
-
+  function removeDragStart(eventParams, dropRef, elements){
+      for (let i = 0; i < elements.length; i++) {
+          const element = elements[i];
+          eventParams.map((obj) =>{
+            obj.element.removeEventListener('dragstart', obj.dragStart)
+          })
+          element.removeEventListener("drop", dropRef);
+        }
   }
-  export const attackDragEvents = (eventParams, element) => {
-    eventParams.map((obj) => 
-     obj.element.addEventListener('dragstart', obj.dragStart)
+  export const attackDragEvents = (eventParams, emptyPiece, elements) => {
+   log(emptyPiece)
+    eventParams.map((obj) =>{
+      obj.element.addEventListener('dragstart', obj.dragStart)
+    }
     )
+    const dropRef = (e) => removeDragStart(eventParams, dropRef, elements)
+    emptyPiece.addEventListener('drop', dropRef)
   }
   export const attachDragEvents = (element, values, setValues, mapSize, draggableElements) => {
     
